@@ -1,4 +1,6 @@
-var myfs = require('fs').promises;
+const myfs = require('fs').promises;
+const Path = require('path');
+
 
 function clearFile(path){
 	return myfs.writeFile(path, "");
@@ -43,13 +45,12 @@ function intoPathWrapper(func){
 	return async function(...args){
 		let path = args[0];
 		let filename = Path.basename(path);
-		let folder = Path.dirname(path).split(Path.sep);
+		let folder = Path.dirname(path);//.split(Path.sep);
+		//console.log(folder);
 		await createPath(folder);
 		return func(...args);
 	};
 }
-
-const writeFile = ToPathWrapper(myfs.writeFile);
 
 const intoPath = {};
 
