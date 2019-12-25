@@ -40,8 +40,8 @@ async function createPath(path){
 		}
 	}
 }
-
-//path, size, mtime
+//путь, размер, дата доступа, дата создания
+//path, size, mtime, birthtime
 function getFileList(folder){
 	function doScanFolder(folderpath){
 		return fsp.readdir(folderpath).then(function(filelist){
@@ -52,7 +52,7 @@ function getFileList(folder){
 						return doScanFolder(filepath);
 					}
 					else if(stat.isFile()){
-						return [[Path.relative(folder, filepath), stat.size, stat.mtime.valueOf()]];
+						return [[Path.relative(folder, filepath), stat.size, stat.mtime.valueOf(), stats.birthtime.valueOf()]];
 					}
 				});
 			})).then((data)=>(concat.apply([], data).sort((a, b)=>(+(a[0]>b[0])-(a[0]<b[0])))));
@@ -60,7 +60,6 @@ function getFileList(folder){
 	}
 	return doScanFolder(folder);
 }
-
 
 function intoPathWrapper(func){
 	return async function(...args){
