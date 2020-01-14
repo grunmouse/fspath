@@ -72,6 +72,10 @@ function intoPathWrapper(func){
 	};
 }
 
+function safeStat(path){
+	return myfs.stat(path).catch(isENOENT(()=>(false)));
+}
+
 const intoPath = {};
 
 [
@@ -80,6 +84,7 @@ const intoPath = {};
 
 module.exports = {
 	isENOENT,
+	safeStat,
 	createFolder,
 	createPath,
 	intoPath,
