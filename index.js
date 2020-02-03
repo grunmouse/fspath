@@ -62,13 +62,12 @@ function getFileList(folder){
 }
 
 function intoPathWrapper(func){
-	return async function(...args){
+	return function(...args){
 		let path = args[0];
 		let filename = Path.basename(path);
 		let folder = Path.dirname(path);//.split(Path.sep);
 		//console.log(folder);
-		await createPath(folder);
-		return func(...args);
+		return createPath(folder).then(()=>(func(...args)));
 	};
 }
 
