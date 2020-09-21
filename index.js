@@ -1,9 +1,9 @@
-const myfs = require('fs').promises;
+const fsp = require('fs').promises;
 const Path = require('path');
 
 
 function clearFile(path){
-	return myfs.writeFile(path, "");
+	return fsp.writeFile(path, "");
 }
 
 function cloneFile(source, newpath){
@@ -22,7 +22,7 @@ function isENOENT(callback){
 }
 
 function createFolder(folder){
-	return myfs.stat(folder).catch(isENOENT(()=>(myfs.mkdir(folder))));
+	return fsp.stat(folder).catch(isENOENT(()=>(fsp.mkdir(folder))));
 }
 
 async function createPath(path){
@@ -40,6 +40,9 @@ async function createPath(path){
 		}
 	}
 }
+
+const concat = Array.prototype.concat;
+
 //путь, размер, дата доступа, дата создания
 //path, size, mtime, birthtime
 function getFileList(folder){
@@ -52,7 +55,7 @@ function getFileList(folder){
 						return doScanFolder(filepath);
 					}
 					else if(stat.isFile()){
-						return [[Path.relative(folder, filepath), stat.size, stat.mtime.valueOf(), stats.birthtime.valueOf()]];
+						return [[Path.relative(folder, filepath), stat.size, stat.mtime.valueOf(), stat.birthtime.valueOf()]];
 					}
 				});
 			})).then((data)=>(concat.apply([], data).sort((a, b)=>(+(a[0]>b[0])-(a[0]<b[0])))));
@@ -72,14 +75,14 @@ function intoPathWrapper(func){
 }
 
 function safeStat(path){
-	return myfs.stat(path).catch(isENOENT(()=>(false)));
+	return fsp.stat(path).catch(isENOENT(()=>(false)));
 }
 
 const intoPath = {};
 
 [
 	'writeFile'
-].forEach((key)=>{intoPath[key] = intoPathWrapper(myfs[key])});
+].forEach((key)=>{intoPath[key] = intoPathWrapper(fsp[key])});
 
 module.exports = {
 	isENOENT,
