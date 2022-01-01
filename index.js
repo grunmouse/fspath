@@ -6,9 +6,6 @@ function clearFile(path){
 	return fsp.writeFile(path, "");
 }
 
-function cloneFile(source, newpath){
-	return readFile(source).then((data)=>(writeFile(newpath, data)));
-}
 
 function isENOENT(callback){
 	return function(err){
@@ -67,7 +64,7 @@ function getFileList(folder){
 function intoPathWrapper(func){
 	return function(...args){
 		let path = args[0];
-		let filename = Path.basename(path);
+		//let filename = Path.basename(path);
 		let folder = Path.dirname(path);//.split(Path.sep);
 		//console.log(folder);
 		return createPath(folder).then(()=>(func(...args)));
@@ -78,7 +75,17 @@ function safeStat(path){
 	return fsp.stat(path).catch(isENOENT(()=>(false)));
 }
 
-const intoPath = {};
+function copyFile(src, dest, mode){
+	let path = dest;
+	//let filename = Path.basename(path);
+	let folder = Path.dirname(path);
+	
+	return createPath(folder).then(()=>(fsp.copyFile(src, dest, mode)));
+}
+
+const intoPath = {
+	copyFile
+};
 
 [
 	'writeFile'
